@@ -9,28 +9,37 @@ import { FlatCompat } from "@eslint/eslintrc";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const compat = new FlatCompat({
-    baseDirectory: __dirname,
-    recommendedConfig: js.configs.recommended,
-    allConfig: js.configs.all
+  baseDirectory: __dirname,
+  recommendedConfig: js.configs.recommended,
+  allConfig: js.configs.all,
 });
 
 export default [
-    ...compat.extends("eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"),
-    {
-        plugins: {
-            "@typescript-eslint": typescriptEslint,
-        },
+  // TODO: doing this separately as for some reason if i put it inside my config object ignores doesn't work
+  {
+    ignores: ["**/dist/**"],
+  },
+  ...compat.extends(
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier",
+  ),
+  {
+    files: ["src/**/*.[jt]s", "src/**/*.[jt]sx"],
 
-        languageOptions: {
-            globals: {
-                ...globals.browser,
-            },
-
-            parser: tsParser,
-            ecmaVersion: "latest",
-            sourceType: "module",
-        },
-
-        rules: {},
+    plugins: {
+      "@typescript-eslint": typescriptEslint,
     },
+
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+      },
+
+      parser: tsParser,
+      ecmaVersion: "latest",
+      sourceType: "module",
+    },
+    rules: {},
+  },
 ];
