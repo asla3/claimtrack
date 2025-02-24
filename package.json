@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "husky"
+    "prepare": "husky",
+    "pre-commit": "npm run pre-commit:backend",
+    "pre-commit:backend": "cd ./backend && npm run pre-commit"
   },
   "author": "",
   "license": "ISC",
