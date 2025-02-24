@@ -7,12 +7,17 @@
     "start": "node dist/index.js",
     "dev": "nodemon src/index.ts",
     "format": "npx prettier . --write",
-    "lint": "npx eslint ."
+    "lint": "npx eslint .",
+    "pre-commit": "npx lint-staged"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
+  "lint-staged": {
+    ".{js,jsx,ts,tsx}": "eslint --fix",
+    "!(*)": "prettier --write"
+  },
   "dependencies": {
     "dotenv": "^16.4.7",
     "express": "^4.21.2"
@@ -26,6 +31,7 @@
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^10.0.1",
     "husky": "^9.1.7",
+    "lint-staged": "^15.4.3",
     "nodemon": "^3.1.9",
     "prettier": "3.5.1",
     "ts-node": "^10.9.2",
