@@ -5,7 +5,7 @@
   "scripts": {
     "build": "npx tsc",
     "start": "node dist/index.js",
-    "dev": "nodemon src/index.ts",
+    "dev": "concurrently \"npx tsc --watch\" \"ts-node-dev --respawn --transpile-only src/index.ts\"",
     "format": "npx prettier . --write",
     "lint": "npx eslint .",
     "pre-commit": "npx lint-staged"
@@ -32,9 +32,8 @@
     "eslint-config-prettier": "^10.0.1",
     "husky": "^9.1.7",
     "lint-staged": "^15.4.3",
-    "nodemon": "^3.1.9",
     "prettier": "3.5.1",
-    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.7.3"
   }
 }
