@@ -14,12 +14,15 @@ const checkHasTenantId = <ReqQuery = ParsedQs>(
   res: Response,
   next: NextFunction,
 ) => {
-  if (req.params.tenantId == undefined) {
-    throw new Error(
-      `Missing tenantId in request params. tenantId is \`${req.params.tenantId}\``,
-    );
+  if (req.params.tenantId != undefined) {
+    return next();
   }
-  next();
+
+  next(
+    new Error(
+      `Missing tenantId in request params. tenantId is \`${req.params.tenantId}\``,
+    ),
+  );
 };
 
 export default checkHasTenantId;
