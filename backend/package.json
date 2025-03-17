@@ -4,8 +4,8 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "npx tsc",
-    "start": "node dist/index.js",
-    "dev": "concurrently \"npx tsc --watch\" \"ts-node-dev --respawn --transpile-only src/index.ts\"",
+    "start": "cross-env TS_NODE_BASEURL=./dist node --require tsconfig-paths/register dist/index.js",
+    "dev": "concurrently \"npx tsc --watch\" \"ts-node-dev -r tsconfig-paths/register --transpile-only src/index.ts\"",
     "format": "npx prettier . --write",
     "lint": "npx eslint .",
     "pre-commit": "npx lint-staged"
@@ -20,7 +20,8 @@
   },
   "dependencies": {
     "dotenv": "^16.4.7",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "tsconfig-paths": "^4.2.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
@@ -28,6 +29,7 @@
     "@typescript-eslint/eslint-plugin": "^8.24.1",
     "@typescript-eslint/parser": "^8.24.1",
     "concurrently": "^9.1.2",
+    "cross-env": "^7.0.3",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^10.0.1",
     "husky": "^9.1.7",
