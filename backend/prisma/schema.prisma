@@ -1,0 +1,196 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Tenant {
+  id                     Int                    @id @default(autoincrement())
+  name                   String
+  status                 TenantStatus           @default(ACTIVE)
+  createdAt              DateTime               @default(now())
+  departments            Department[]
+  users                  User[]
+  financialClaimStatuses FinancialClaimStatus[]
+  serviceTypes           ServiceType[]
+  services               Service[]
+  serviceProviders       ServiceProvider[]
+  receipts               Receipt[]
+  financialClaims        FinancialClaim[]
+  claimPayOuts           ClaimPayOut[]
+}
+
+model Department {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  tenant      Tenant    @relation(fields: [tenantId], references: [id])
+  tenantId    Int
+  createdAt   DateTime  @default(now())
+  deletedAt   DateTime?
+  users       User[]
+  services    Service[]
+
+  @@unique([name, tenantId])
+}
+
+model User {
+  id              Int              @id @default(autoincrement())
+  name            String
+  avatarUrl       String?
+  // TODO: might have to add email and password for log in?
+  role            UserRole         @default(MEMBER)
+  status          UserStatus       @default(ACTIVE)
+  department      Department       @relation(fields: [departmentId], references: [id])
+  departmentId    Int
+  tenant          Tenant           @relation(fields: [tenantId], references: [id])
+  tenantId        Int
+  createdAt       DateTime         @default(now())
+  services        Service[]
+  receipts        Receipt[]
+  financialClaims FinancialClaim[]
+  claimPayOuts    ClaimPayOut[]
+}
+
+model ServiceProvider {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  tenant      Tenant    @relation(fields: [tenantId], references: [id])
+  tenantId    Int
+  createdAt   DateTime  @default(now())
+  deletedAt   DateTime?
+  services    Service[]
+
+  @@unique([name, tenantId])
+}
+
+model ServiceType {
+  id                Int       @id @default(autoincrement())
+  title             String
+  description       String?
+  reimbursementRate Decimal
+  tenant            Tenant    @relation(fields: [tenantId], references: [id])
+  tenantId          Int
+  createdAt         DateTime  @default(now())
+  deletedAt         DateTime?
+  services          Service[]
+
+  @@unique([title, tenantId])
+}
+
+model FinancialClaimStatus {
+  id              Int              @id @default(autoincrement())
+  name            String
+  description     String?
+  tenant          Tenant           @relation(fields: [tenantId], references: [id])
+  tenantId        Int
+  createdAt       DateTime         @default(now())
+  deletedAt       DateTime?
+  financialClaims FinancialClaim[]
+
+  @@unique([name, tenantId])
+}
+
+model Service {
+  id                Int             @id @default(autoincrement())
+  date              DateTime
+  department        Department      @relation(fields: [departmentId], references: [id])
+  departmentId      Int
+  serviceProvider   ServiceProvider @relation(fields: [serviceProviderId], references: [id])
+  serviceProviderId Int
+  type              ServiceType     @relation(fields: [typeId], references: [id])
+  typeId            Int
+  cost              Decimal
+  Receipt           Receipt         @relation(fields: [receiptId], references: [id])
+  receiptId         Int
+  notes             String
+  attachments       String[]
+  author            User            @relation(fields: [authorId], references: [id])
+  authorId          Int
+  tenant            Tenant          @relation(fields: [tenantId], references: [id])
+  tenantId          Int
+  createdAt         DateTime        @default(now())
+  deletedAt         DateTime?
+}
+
+model Receipt {
+  id             Int             @id @default(autoincrement())
+  date           DateTime
+  amount         Decimal
+  fileUrl        String
+  author         User            @relation(fields: [authorId], references: [id])
+  authorId       Int
+  tenant         Tenant          @relation(fields: [tenantId], references: [id])
+  tenantId       Int
+  createdAt      DateTime        @default(now())
+  deletedAt      DateTime?
+  services       Service[]
+  financialClaim FinancialClaim?
+}
+
+model FinancialClaim {
+  id                   Int                  @id @default(autoincrement())
+  submissionDate       DateTime
+  status               FinancialClaimStatus @relation(fields: [statusId], references: [id])
+  statusId             Int
+  amountToClaim        Decimal
+  actualAmountToRefund Decimal
+  approvalDate         DateTime
+  receipt              Receipt              @relation(fields: [receiptId], references: [id])
+  receiptId            Int                  @unique
+  author               User                 @relation(fields: [authorId], references: [id])
+  authorId             Int
+  tenant               Tenant               @relation(fields: [tenantId], references: [id])
+  tenantId             Int
+  createdAt            DateTime             @default(now())
+  deletedAt            DateTime?
+  claimPayOuts         ClaimPayOut[]
+}
+
+model ClaimPayOut {
+  id             Int            @id @default(autoincrement())
+  date           DateTime
+  amount         Decimal
+  method         PaymentMethod
+  notes          String?
+  financialClaim FinancialClaim @relation(fields: [claimId], references: [id])
+  claimId        Int
+  author         User           @relation(fields: [authorId], references: [id])
+  authorId       Int
+  tenant         Tenant         @relation(fields: [tenantId], references: [id])
+  tenantId       Int
+  createdAt      DateTime       @default(now())
+  deletedAt      DateTime?
+}
+
+enum TenantStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum UserRole {
+  ADMIN
+  MEMBER
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum PaymentMethod {
+  BANK_TRANSFER
+  CASH
+  CHECK
+  OTHER
+}
