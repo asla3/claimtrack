@@ -15,7 +15,11 @@ if (!auth0Secret) {
   throw new Error("AUTH0_SECRET is not set");
 }
 
-app.use(auth(getAuth0Config(auth0Secret)));
+app.use(
+  auth(
+    getAuth0Config({ secret: auth0Secret, baseURL: "http://localhost:3000" }),
+  ),
+);
 app.use(express.json());
 
 // TODO: remove when API ready
