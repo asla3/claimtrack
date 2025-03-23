@@ -48,11 +48,9 @@ model User {
   authId          String           @unique
   name            String
   avatarUrl       String?
-  // TODO: might have to add email and password for log in?
   role            UserRole         @default(MEMBER)
   status          UserStatus       @default(ACTIVE)
-  department      Department       @relation(fields: [departmentId], references: [id])
-  departmentId    Int
+  departments     Department[]
   tenant          Tenant           @relation(fields: [tenantId], references: [id])
   tenantId        Int
   createdAt       DateTime         @default(now())
