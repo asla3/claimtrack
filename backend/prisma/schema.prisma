@@ -45,6 +45,7 @@ model Department {
 
 model User {
   id              Int              @id @default(autoincrement())
+  authId          String           @unique
   name            String
   avatarUrl       String?
   // TODO: might have to add email and password for log in?
