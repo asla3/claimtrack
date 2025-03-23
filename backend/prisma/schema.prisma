@@ -91,6 +91,7 @@ model FinancialClaimStatus {
   id              Int              @id @default(autoincrement())
   name            String
   description     String?
+  stageCategory   StageCategory
   tenant          Tenant           @relation(fields: [tenantId], references: [id])
   tenantId        Int
   createdAt       DateTime         @default(now())
@@ -126,7 +127,7 @@ model Receipt {
   id             Int             @id @default(autoincrement())
   date           DateTime
   amount         Decimal
-  fileUrl        String
+  fileUrl        String?
   author         User            @relation(fields: [authorId], references: [id])
   authorId       Int
   tenant         Tenant          @relation(fields: [tenantId], references: [id])
@@ -192,4 +193,11 @@ enum PaymentMethod {
   CASH
   CHECK
   OTHER
+}
+
+enum StageCategory {
+  PENDING
+  IN_PROGRESS
+  DENIED
+  COMPLETED
 }
