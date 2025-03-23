@@ -110,8 +110,8 @@ model Service {
   type              ServiceType     @relation(fields: [typeId], references: [id])
   typeId            Int
   cost              Decimal
-  Receipt           Receipt         @relation(fields: [receiptId], references: [id])
-  receiptId         Int
+  Receipt           Receipt?        @relation(fields: [receiptId], references: [id])
+  receiptId         Int?
   notes             String
   attachments       String[]
   author            User            @relation(fields: [authorId], references: [id])
