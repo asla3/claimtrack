@@ -1,12 +1,15 @@
-import type BaseError from "./errors/BaseError";
-import type InternalServerError from "./errors/InternalServerError";
-
 export interface BaseRequestParams {
   [key: string]: string | undefined;
 }
 
 export interface TenantRequestParams extends BaseRequestParams {
   tenantId: string;
+}
+
+export interface ClientError {
+  code: string;
+  name: string;
+  details: string;
 }
 
 export interface BaseResponse {
@@ -18,18 +21,15 @@ export interface SuccessResponse<T = unknown> extends BaseResponse {
   data: T;
 }
 
-export interface BaseErrorResponse<T extends BaseError = BaseError>
-  extends BaseResponse {
+export interface BaseErrorResponse extends BaseResponse {
   status: "fail" | "error";
-  error: T;
+  error: ClientError;
 }
 
-export interface FailResponse<T extends BaseError = BaseError>
-  extends BaseErrorResponse<T> {
+export interface FailResponse extends BaseErrorResponse {
   status: "fail";
 }
 
-export interface InternalServerErrorResponse
-  extends BaseErrorResponse<InternalServerError> {
+export interface InternalServerErrorResponse extends BaseErrorResponse {
   status: "error";
 }

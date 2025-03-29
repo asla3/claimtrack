@@ -1,9 +1,11 @@
+import type { ClientError } from "@/types";
+
 /**
  * BaseError is a foundation for creating client-facing errors.
  * It should never be used directly. Instead, create specific error classes
  * (e.g., `TenantNotFoundError`) that inherit from `BaseError`.
  */
-class BaseError extends Error {
+class BaseError extends Error implements ClientError {
   code: string;
   details: string;
   constructor({ details, message }: { details: string; message: string }) {
