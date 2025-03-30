@@ -8,7 +8,7 @@ export interface TenantRequestParams extends BaseRequestParams {
 
 export interface ClientError {
   code: string;
-  name: string;
+  message: string;
   details: string;
 }
 
