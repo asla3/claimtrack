@@ -4,6 +4,7 @@ import { auth } from "express-openid-connect";
 
 import tenantsRouter from "./routes/tenantsRouter";
 import { getAuth0Config } from "./config/auth0";
+import errorHandler from "./middleware/errorHandler";
 
 dotenv.config();
 
@@ -28,6 +29,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/tenants", tenantsRouter);
+
+app.use(errorHandler);
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
